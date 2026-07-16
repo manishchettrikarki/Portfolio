@@ -8,7 +8,7 @@ import type {
   Testimonial,
   PortfolioItem,
   PortfolioFilter,
-  NewsItem,
+  BlogsItem,
 } from "@/types";
 
 // ─── Site ─────────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ export const navLinks: NavLink[] = [
   { label: "Home", section: "home" },
   { label: "About", section: "about" },
   { label: "Portfolio", section: "portfolio" },
-  { label: "News", section: "news" },
+  { label: "BLOGS", section: "blogs" },
   { label: "Contact", section: "contact" },
 ];
 
@@ -126,19 +126,19 @@ export const education: ResumeItem[] = [
 // ─── Testimonials ────────────────────────────────────────────────────────────
 export const testimonials: Testimonial[] = [
   {
-    id: 1,
+    id: "1",
     name: "Product Manager",
     role: "3Bird",
     text: "Dibya consistently delivers high-quality results and ensures smooth coordination between QA and development teams.",
   },
   {
-    id: 2,
+    id: "2",
     name: "Client",
     role: "Avishkaram Technologies",
     text: "Clear communication, strong QA insights, and a business-focused mindset made Dibya a valuable contributor to our projects.",
   },
   {
-    id: 3,
+    id: "3",
     name: "Team Member",
     role: "Developer",
     text: "Excellent at identifying issues early and improving workflows with practical solutions.",
@@ -155,7 +155,7 @@ export const portfolioFilters: PortfolioFilter[] = [
 
 export const portfolioItems: PortfolioItem[] = [
   {
-    id: 1,
+    id: "1",
     title: "QA Automation & Reporting System",
     category: "qa",
     categoryLabel: "QA Project",
@@ -167,7 +167,7 @@ export const portfolioItems: PortfolioItem[] = [
     technologies: ["JIRA", "Agile", "QA Metrics"],
   },
   {
-    id: 2,
+    id: "2",
     title: "Web Application Testing Suite",
     category: "web",
     categoryLabel: "Web App",
@@ -179,7 +179,7 @@ export const portfolioItems: PortfolioItem[] = [
     technologies: ["Manual Testing", "Test Cases", "Bug Tracking"],
   },
   {
-    id: 3,
+    id: "3",
     title: "Microsoft Add-in QA Project",
     category: "qa",
     categoryLabel: "QA Project",
@@ -192,10 +192,11 @@ export const portfolioItems: PortfolioItem[] = [
   },
 ];
 
-// ─── News ─────────────────────────────────────────────────────────────────────
-export const newsItems: NewsItem[] = [
+// ─── blogs ─────────────────────────────────────────────────────────────────────
+export const blogsItem: BlogsItem[] = [
   {
-    id: 1,
+    id: "1",
+    slug: "improving-qa-efficiency-with-agile-metrics",
     title: "Improving QA Efficiency with Agile Metrics",
     excerpt:
       "How tracking sprint metrics and defect trends can significantly improve software delivery.",
@@ -209,7 +210,8 @@ export const newsItems: NewsItem[] = [
     content: `<p>Tracking sprint metrics such as velocity, burndown charts, and defect rates allows teams to identify inefficiencies early and improve overall delivery performance.</p>`,
   },
   {
-    id: 2,
+    id: "2",
+    slug: "bridging-qa-and-business-goals",
     title: "Bridging QA and Business Goals",
     excerpt:
       "Why QA professionals should understand business objectives for better product outcomes.",
@@ -236,7 +238,7 @@ export const ADMIN_SECTIONS = [
   { id: "education", label: "Education", icon: "book" },
   { id: "testimonials", label: "Testimonials", icon: "message" },
   { id: "portfolio", label: "Portfolio", icon: "grid" },
-  { id: "news", label: "News", icon: "newspaper" },
+  { id: "blogs", label: "Blogs", icon: "newspaper" },
 ] as const;
 
 export type AdminSectionId = (typeof ADMIN_SECTIONS)[number]["id"];
@@ -252,4 +254,4 @@ export const DEFAULT_EXPERIENCE = experience;
 export const DEFAULT_EDUCATION = education;
 export const DEFAULT_TESTIMONIALS = testimonials;
 export const DEFAULT_PORTFOLIO_ITEMS = portfolioItems;
-export const DEFAULT_NEWS_ITEMS = newsItems;
+export const DEFAULT_BLOGS_ITEMS = blogsItem;

@@ -1,5 +1,5 @@
 // ─── Sections ─────────────────────────────────────────────────────────────────
-export type SectionId = "home" | "about" | "portfolio" | "news" | "contact";
+export type SectionId = "home" | "about" | "portfolio" | "blogs" | "contact";
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 export interface NavLink {
@@ -40,7 +40,7 @@ export interface ResumeItem {
 }
 
 export interface Testimonial {
-  id: number;
+  id: string;
   name: string;
   role: string;
   text: string;
@@ -50,7 +50,7 @@ export interface Testimonial {
 export type PortfolioCategory = "all" | "web" | "design" | "video" | "audio";
 
 export interface PortfolioItem {
-  id: number;
+  id: string;
   title: string;
   category: Exclude<PortfolioCategory, "all"> | string;
   categoryLabel: string;
@@ -58,6 +58,7 @@ export interface PortfolioItem {
   client: string;
   date: string;
   url?: string;
+  imageUrl?: string | null;
   description: string;
   technologies: string[];
 }
@@ -67,10 +68,11 @@ export interface PortfolioFilter {
   value: PortfolioCategory | string;
 }
 
-// ─── News ─────────────────────────────────────────────────────────────────────
-export interface NewsItem {
-  id: number;
+// ─── Blogs ────────────────────────────────────────────────────────────────────
+export interface BlogsItem {
+  id: string;
   title: string;
+  slug: string;
   excerpt: string;
   date: string;
   category: string;
@@ -79,6 +81,7 @@ export interface NewsItem {
   content: string;
   tags: string[];
   quote?: string;
+  coverImageUrl?: string | null;
 }
 
 // ─── Contact ──────────────────────────────────────────────────────────────────

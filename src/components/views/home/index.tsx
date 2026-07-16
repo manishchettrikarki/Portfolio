@@ -2,10 +2,11 @@
 
 import { useSectionContext } from "@/components/reusable/sectionContext";
 import { SocialIcon } from "@/components/reusable/icons";
-import { siteConfig } from "@/utils/constants";
+import { usePortfolioContent } from "@/utils/usePortfolioContent";
 
 export function HomeView() {
   const { active, setActive } = useSectionContext();
+  const { siteConfig } = usePortfolioContent();
 
   return (
     <section className={`view ${active === "home" ? "view--active" : ""}`}>
@@ -105,12 +106,12 @@ export function HomeView() {
                   aria-label={s.label}
                   style={{ color: "var(--text)", transition: "color 0.25s" }}
                   onMouseEnter={(e) =>
-                    ((e.currentTarget as HTMLElement).style.color =
-                      "var(--heading)")
+                  ((e.currentTarget as HTMLElement).style.color =
+                    "var(--heading)")
                   }
                   onMouseLeave={(e) =>
-                    ((e.currentTarget as HTMLElement).style.color =
-                      "var(--text)")
+                  ((e.currentTarget as HTMLElement).style.color =
+                    "var(--text)")
                   }
                 >
                   <SocialIcon name={s.icon} size={16} />

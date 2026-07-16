@@ -3,16 +3,17 @@
 import { useSectionContext } from "@/components/reusable/sectionContext";
 import { SectionTitle } from "@/components/reusable/sectionTitle";
 import { CalendarIcon, QuoteIcon } from "@/components/reusable/icons";
-import { newsItems } from "@/utils/constants";
-import type { NewsItem } from "@/types";
+import { usePortfolioContent } from "@/utils/usePortfolioContent";
+import type { BlogsItem } from "@/types";
 
-export function NewsView() {
+export function BlogsView() {
   const { active, openModal } = useSectionContext();
+  const { blogsItems: blogsItems } = usePortfolioContent();
 
   return (
-    <section className={`view ${active === "news" ? "view--active" : ""}`}>
+    <section className={`view ${active === "blogs" ? "view--active" : ""}`}>
       <div style={{ padding: "64px 56px" }}>
-        <SectionTitle title="News" bgText="Blog" />
+        <SectionTitle title="Blogs" bgText="Blog" />
 
         <ul
           style={{
@@ -23,11 +24,11 @@ export function NewsView() {
             padding: 0,
           }}
         >
-          {newsItems.map((post) => (
-            <NewsCard
+          {blogsItems.map((post) => (
+            <BlogsCard
               key={post.id}
               post={post}
-              onOpen={() => openModal(<NewsModal post={post} />)}
+              onOpen={() => openModal(<BlogsModal post={post} />)}
             />
           ))}
         </ul>
@@ -36,7 +37,7 @@ export function NewsView() {
   );
 }
 
-function NewsCard({ post, onOpen }: { post: NewsItem; onOpen: () => void }) {
+function BlogsCard({ post, onOpen }: { post: BlogsItem; onOpen: () => void }) {
   return (
     <li style={{ background: "var(--sidebar-bg)" }}>
       {/* Image placeholder */}
@@ -46,7 +47,9 @@ function NewsCard({ post, onOpen }: { post: NewsItem; onOpen: () => void }) {
           position: "relative",
           aspectRatio: "16/9",
           cursor: "pointer",
-          background: "linear-gradient(135deg, #d0d0d0, #a0a0a0)",
+          background: post.coverImageUrl
+            ? `url(${post.coverImageUrl}) center/cover no-repeat`
+            : "linear-gradient(135deg, #d0d0d0, #a0a0a0)",
           overflow: "hidden",
         }}
       >
@@ -144,7 +147,7 @@ function NewsCard({ post, onOpen }: { post: NewsItem; onOpen: () => void }) {
   );
 }
 
-function NewsModal({ post }: { post: NewsItem }) {
+function BlogsModal({ post }: { post: BlogsItem }) {
   return (
     <div>
       {/* Hero */}
@@ -152,7 +155,9 @@ function NewsModal({ post }: { post: NewsItem }) {
         style={{
           width: "100%",
           aspectRatio: "16/9",
-          background: "linear-gradient(135deg, #d0d0d0, #a0a0a0)",
+          background: post.coverImageUrl
+            ? `url(${post.coverImageUrl}) center/cover no-repeat`
+            : "linear-gradient(135deg, #d0d0d0, #a0a0a0)",
           position: "relative",
         }}
       >

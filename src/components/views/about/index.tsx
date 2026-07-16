@@ -5,21 +5,22 @@ import { useSectionContext } from "@/components/reusable/sectionContext";
 import { SectionTitle } from "@/components/reusable/sectionTitle";
 import { DownloadIcon } from "@/components/reusable/icons";
 import { animateCounter } from "@/utils";
-import {
-  aboutBio,
-  shortInfo,
-  counters,
-  skills,
-  skillList,
-  experience,
-  education,
-  testimonials,
-  siteConfig,
-} from "@/utils/constants";
+import { usePortfolioContent } from "@/utils/usePortfolioContent";
 
 export function AboutView() {
   const { active } = useSectionContext();
   const isActive = active === "about";
+  const {
+    aboutBio,
+    shortInfo,
+    counters,
+    skills,
+    skillList,
+    experience,
+    education,
+    testimonials,
+    siteConfig,
+  } = usePortfolioContent();
 
   return (
     <section className={`view ${isActive ? "view--active" : ""}`}>
@@ -38,15 +39,19 @@ export function AboutView() {
           >
             {aboutBio}
           </p>
-          <a
-            href={siteConfig.cvFile}
-            download
-            className="btn btn--primary"
-            style={{ display: "inline-flex" }}
-          >
-            <DownloadIcon size={16} />
-            Download CV
-          </a>
+          {siteConfig.cvFile && (
+            <a
+              href={siteConfig.cvFile}
+              download
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn--primary"
+              style={{ display: "inline-flex" }}
+            >
+              <DownloadIcon size={16} />
+              Download CV
+            </a>
+          )}
         </Divider>
 
         {/* Short info */}
@@ -82,12 +87,12 @@ export function AboutView() {
                     href={item.href}
                     style={{ color: "var(--text)", transition: "color 0.25s" }}
                     onMouseEnter={(e) =>
-                      ((e.currentTarget as HTMLElement).style.color =
-                        "var(--heading)")
+                    ((e.currentTarget as HTMLElement).style.color =
+                      "var(--heading)")
                     }
                     onMouseLeave={(e) =>
-                      ((e.currentTarget as HTMLElement).style.color =
-                        "var(--text)")
+                    ((e.currentTarget as HTMLElement).style.color =
+                      "var(--text)")
                     }
                   >
                     {item.value}

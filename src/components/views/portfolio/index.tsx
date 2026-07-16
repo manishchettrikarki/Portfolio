@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useSectionContext } from "@/components/reusable/sectionContext";
 import { SectionTitle } from "@/components/reusable/sectionTitle";
 import { ExternalIcon } from "@/components/reusable/icons";
-import { portfolioFilters, portfolioItems } from "@/utils/constants";
+import { portfolioFilters } from "@/utils/constants";
+import { usePortfolioContent } from "@/utils/usePortfolioContent";
 import type { PortfolioCategory, PortfolioItem } from "@/types";
 
 export function PortfolioView() {
   const { active, openModal } = useSectionContext();
   const [filter, setFilter] = useState<PortfolioCategory>("all");
+  const { portfolioItems } = usePortfolioContent();
 
   const filtered =
     filter === "all"
@@ -69,6 +71,15 @@ export function PortfolioView() {
             <li
               key={item.id}
               className="portfolio-item"
+              style={
+                item.imageUrl
+                  ? {
+                    backgroundImage: `url(${item.imageUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                  : undefined
+              }
               onMouseEnter={() => showFloating(item.title, item.categoryLabel)}
               onMouseLeave={hideFloating}
               onClick={() => openModal(<PortfolioModal item={item} />)}
@@ -118,12 +129,14 @@ export function PortfolioView() {
 function PortfolioModal({ item }: { item: PortfolioItem }) {
   return (
     <div>
-      {/* Hero placeholder */}
+      {/* Hero */}
       <div
         style={{
           width: "100%",
           aspectRatio: "16/9",
-          background: "linear-gradient(135deg, #c8c8c8, #8a8a8a)",
+          background: item.imageUrl
+            ? `url(${item.imageUrl}) center/cover no-repeat`
+            : "linear-gradient(135deg, #c8c8c8, #8a8a8a)",
         }}
       />
 

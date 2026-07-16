@@ -1,6 +1,10 @@
-import { siteConfig } from "@/utils/constants";
+"use client";
+
+import { usePortfolioContent } from "@/utils/usePortfolioContent";
 
 export function Footer() {
+  const { siteConfig } = usePortfolioContent();
+
   return (
     <footer className="footer">
       <p>

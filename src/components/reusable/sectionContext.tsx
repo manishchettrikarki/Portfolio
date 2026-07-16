@@ -13,10 +13,10 @@ interface SectionContextType {
 
 const SectionContext = createContext<SectionContextType>({
   active: "home",
-  setActive: () => {},
+  setActive: () => { },
   modalContent: null,
-  openModal: () => {},
-  closeModal: () => {},
+  openModal: () => { },
+  closeModal: () => { },
 });
 
 export function useSectionContext() {

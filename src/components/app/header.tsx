@@ -4,14 +4,16 @@ import { useState } from "react";
 import { useSectionContext } from "@/components/reusable/sectionContext";
 import { useDarkMode } from "@/components/reusable/useDarkMode";
 import { SocialIcon, SunIcon, MoonIcon } from "@/components/reusable/icons";
-import { siteConfig, navLinks } from "@/utils/constants";
+import { navLinks } from "@/utils/constants";
 import type { SectionId } from "@/types";
+import { usePortfolioContent } from "@/utils/usePortfolioContent";
 
 // ─── Desktop Sidebar ──────────────────────────────────────────────────────────
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { active, setActive } = useSectionContext();
   const { isDark, toggle } = useDarkMode();
+  const { siteConfig } = usePortfolioContent();
 
   const navigate = (section: SectionId) => {
     setActive(section);
@@ -87,12 +89,12 @@ export function Header() {
               aria-label={s.label}
               style={{ color: "var(--text)", transition: "color 0.25s" }}
               onMouseEnter={(e) =>
-                ((e.target as SVGElement).closest("a")!.style.color =
-                  "var(--heading)")
+              ((e.target as SVGElement).closest("a")!.style.color =
+                "var(--heading)")
               }
               onMouseLeave={(e) =>
-                ((e.target as SVGElement).closest("a")!.style.color =
-                  "var(--text)")
+              ((e.target as SVGElement).closest("a")!.style.color =
+                "var(--text)")
               }
             >
               <SocialIcon name={s.icon} size={15} />

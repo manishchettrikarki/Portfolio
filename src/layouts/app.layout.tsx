@@ -8,6 +8,7 @@ import { PortfolioFloatingTitle } from "@/components/reusable/portfolioFloatingT
 import { AppModal } from "@/components/reusable/appModal";
 import { Header } from "@/components/app/header";
 import { Footer } from "@/components/app/footer";
+import { PortfolioContentProvider } from "@/utils/usePortfolioContent";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -15,22 +16,24 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <SectionProvider>
-      <Preloader />
-      <CustomCursor />
-      <PortfolioFloatingTitle />
-      <AppModal />
+    <PortfolioContentProvider>
+      <SectionProvider>
+        <Preloader />
+        <CustomCursor />
+        <PortfolioFloatingTitle />
+        <AppModal />
 
-      <div className="layout">
-        {/* Desktop sidebar lives inside Header */}
-        <Header />
+        <div className="layout">
+          {/* Desktop sidebar lives inside Header */}
+          <Header />
 
-        {/* Main content area */}
-        <main className="main">
-          {children}
-          <Footer />
-        </main>
-      </div>
-    </SectionProvider>
+          {/* Main content area */}
+          <main className="main">
+            {children}
+            <Footer />
+          </main>
+        </div>
+      </SectionProvider>
+    </PortfolioContentProvider>
   );
 }
