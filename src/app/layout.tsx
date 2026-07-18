@@ -1,11 +1,26 @@
 import "@/styles/globals.css";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { createClient } from "@/lib/supabase/server";
+import { getSiteContent } from "@/lib/data/site";
 
-export const metadata = {
-  title: "Dibya Guragain - QA Engineer & Web Developer",
-  description:
-    "Portfolio showcasing QA projects, web applications, and research work by Dibya Guragain. Experienced QA Engineer and Web Developer with a passion for quality assurance, web development, and research. Explore my portfolio to see my work in QA automation, web application testing, and research projects.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const supabase = await createClient();
+    const site = await getSiteContent(supabase);
+    return {
+      title: `${site.name} - ${site.role}`,
+      description:
+        site.tagline || site.about_bio || "Personal portfolio website.",
+    };
+  } catch {
+    // Fallback if Supabase isn't reachable/configured yet.
+    return {
+      title: "Portfolio",
+      description: "Personal portfolio website.",
+    };
+  }
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
