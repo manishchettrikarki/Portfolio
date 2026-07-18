@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import type { SiteContentRow } from "@/lib/data/types";
-import { saveSiteContent } from "./actions";
+import { saveSiteContent, uploadProfilePicture, removeProfilePicture } from "./actions";
 
 const inputCls =
   "border border-gray-300 rounded-md py-2 px-3 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -12,6 +12,34 @@ const cardCls = "border border-neutral-200 rounded-lg p-5 bg-white mb-6";
 export function SiteForm({ site }: { site: SiteContentRow }) {
   const [pending, startTransition] = useTransition();
   const [savedAt, setSavedAt] = useState<number | null>(null);
+
+  const [profileImageUrl, setProfileImageUrl] = useState(site.profile_image_url);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    try {
+      const fd = new FormData();
+      fd.set("file", file);
+      await uploadProfilePicture(fd);
+      setProfileImageUrl(URL.createObjectURL(file)); // optimistic preview
+    } catch (err) {
+      alert("Upload failed: " + (err as Error).message);
+    } finally {
+      setUploadingPhoto(false);
+      if (photoInputRef.current) photoInputRef.current.value = "";
+    }
+  }
+
+  function removePhoto() {
+    startTransition(async () => {
+      await removeProfilePicture();
+      setProfileImageUrl(null);
+    });
+  }
 
   const [name, setName] = useState(site.name);
   const [role, setRole] = useState(site.role);
@@ -49,6 +77,46 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
 
   return (
     <div>
+      {/* ── Profile picture ────────────────────────────────────────── */}
+      <section className={cardCls}>
+        <h2 className="font-semibold mb-4">Profile picture</h2>
+        <div className="flex items-center gap-4">
+          {profileImageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profileImageUrl}
+              alt=""
+              className="w-24 h-24 object-cover rounded-full border"
+            />
+          ) : (
+            <div className="w-24 h-24 rounded-full bg-neutral-100 border flex items-center justify-center text-xs text-neutral-400">
+              No photo
+            </div>
+          )}
+          <div>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              disabled={uploadingPhoto}
+              onChange={handlePhotoChange}
+            />
+            {uploadingPhoto && (
+              <p className="text-xs text-neutral-500 mt-1">Uploading…</p>
+            )}
+            {profileImageUrl && !uploadingPhoto && (
+              <button
+                type="button"
+                onClick={removePhoto}
+                className="text-sm text-red-600 mt-2 block"
+              >
+                Remove photo
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* ── Basic info ─────────────────────────────────────────────── */}
       <section className={cardCls}>
         <h2 className="font-semibold mb-4">Basic info</h2>

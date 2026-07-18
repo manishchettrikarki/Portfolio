@@ -37,7 +37,7 @@ export function HomeView() {
               width: 260,
               height: 260,
               flexShrink: 0,
-              background: "url('/profile.jpg') center/cover no-repeat",
+              background: `url('${siteConfig.profileImageUrl || "/profile.jpg"}') center/cover no-repeat`,
             }}
           />
 
@@ -106,12 +106,12 @@ export function HomeView() {
                   aria-label={s.label}
                   style={{ color: "var(--text)", transition: "color 0.25s" }}
                   onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLElement).style.color =
-                    "var(--heading)")
+                    ((e.currentTarget as HTMLElement).style.color =
+                      "var(--heading)")
                   }
                   onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLElement).style.color =
-                    "var(--text)")
+                    ((e.currentTarget as HTMLElement).style.color =
+                      "var(--text)")
                   }
                 >
                   <SocialIcon name={s.icon} size={16} />

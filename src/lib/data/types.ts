@@ -16,6 +16,7 @@ export interface SiteContentRow {
   skill_list: string[];
   cv_url: string | null;
   cv_filename: string | null;
+  profile_image_url: string | null;
   updated_at: string;
 }
 

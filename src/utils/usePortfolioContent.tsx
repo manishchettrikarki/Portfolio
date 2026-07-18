@@ -41,6 +41,7 @@ interface SiteConfig {
   location: string;
   social: SocialLink[];
   cvFile: string | null;
+  profileImageUrl: string | null;
 }
 
 interface PortfolioContentValue {
@@ -60,7 +61,7 @@ interface PortfolioContentValue {
 
 const defaultValue: PortfolioContentValue = {
   loading: true,
-  siteConfig: { ...DEFAULT_SITE_CONFIG, cvFile: DEFAULT_SITE_CONFIG.cvFile },
+  siteConfig: { ...DEFAULT_SITE_CONFIG, cvFile: DEFAULT_SITE_CONFIG.cvFile, profileImageUrl: null },
   aboutBio: DEFAULT_ABOUT_BIO,
   shortInfo: DEFAULT_SHORT_INFO,
   counters: DEFAULT_COUNTERS,
@@ -128,11 +129,11 @@ export function PortfolioContentProvider({
         console.error(
           "Failed to load portfolio content from Supabase, using defaults.",
           site.error ||
-          experience.error ||
-          education.error ||
-          testimonials.error ||
-          portfolio.error ||
-          blogs.error,
+            experience.error ||
+            education.error ||
+            testimonials.error ||
+            portfolio.error ||
+            blogs.error,
         );
         setValue((v) => ({ ...v, loading: false }));
         return;
@@ -151,6 +152,7 @@ export function PortfolioContentProvider({
           location: s.location,
           social: s.social ?? [],
           cvFile: s.cv_url ?? null,
+          profileImageUrl: s.profile_image_url ?? null,
         },
         aboutBio: s.about_bio,
         shortInfo: s.short_info ?? [],
