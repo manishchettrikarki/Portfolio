@@ -1,15 +1,14 @@
 "use client";
 
-import { useSectionContext } from "@/components/reusable/sectionContext";
+import Link from "next/link";
 import { SocialIcon } from "@/components/reusable/icons";
 import { usePortfolioContent } from "@/utils/usePortfolioContent";
 
 export function HomeView() {
-  const { active, setActive } = useSectionContext();
   const { siteConfig } = usePortfolioContent();
 
   return (
-    <section className={`view ${active === "home" ? "view--active" : ""}`}>
+    <section className="view view--active">
       <div
         style={{
           minHeight: "100vh",
@@ -121,18 +120,12 @@ export function HomeView() {
 
             {/* CTAs */}
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-              <button
-                className="btn btn--primary"
-                onClick={() => setActive("portfolio")}
-              >
+              <Link href="/portfolio" className="btn btn--primary">
                 View Work
-              </button>
-              <button
-                className="btn btn--outline"
-                onClick={() => setActive("contact")}
-              >
+              </Link>
+              <Link href="/contact" className="btn btn--outline">
                 Hire Me
-              </button>
+              </Link>
             </div>
           </div>
         </div>

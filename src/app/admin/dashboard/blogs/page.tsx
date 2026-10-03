@@ -8,10 +8,10 @@ export default async function BlogsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">Blogs</h1>
+        <h1 className="text-xl font-semibold text-neutral-900 tracking-tight">Blogs</h1>
         <Link
           href="/admin/dashboard/blogs/new"
-          className="bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-700"
+          className="bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
         >
           + New post
         </Link>
@@ -21,7 +21,7 @@ export default async function BlogsPage() {
         {blogs.map((post) => (
           <div
             key={post.id}
-            className="border border-neutral-200 rounded-lg p-5 bg-white flex items-start justify-between"
+            className="border border-neutral-200/80 rounded-2xl p-5 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.04)] flex items-start justify-between"
           >
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -45,7 +45,7 @@ export default async function BlogsPage() {
               <TogglePublishButton id={post.id} published={post.published} />
               <Link
                 href={`/admin/dashboard/blogs/${post.id}`}
-                className="text-sm text-blue-600"
+                className="text-sm text-indigo-600"
               >
                 Edit
               </Link>

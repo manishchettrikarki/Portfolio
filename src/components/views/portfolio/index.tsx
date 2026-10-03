@@ -4,14 +4,13 @@ import { useState } from "react";
 import { useSectionContext } from "@/components/reusable/sectionContext";
 import { SectionTitle } from "@/components/reusable/sectionTitle";
 import { ExternalIcon } from "@/components/reusable/icons";
-import { portfolioFilters } from "@/utils/constants";
 import { usePortfolioContent } from "@/utils/usePortfolioContent";
-import type { PortfolioCategory, PortfolioItem } from "@/types";
+import type { PortfolioItem } from "@/types";
 
 export function PortfolioView() {
-  const { active, openModal } = useSectionContext();
-  const [filter, setFilter] = useState<PortfolioCategory>("all");
-  const { portfolioItems } = usePortfolioContent();
+  const { openModal } = useSectionContext();
+  const [filter, setFilter] = useState<string>("all");
+  const { portfolioItems, portfolioFilters } = usePortfolioContent();
 
   const filtered =
     filter === "all"
@@ -30,7 +29,7 @@ export function PortfolioView() {
   };
 
   return (
-    <section className={`view ${active === "portfolio" ? "view--active" : ""}`}>
+    <section className="view view--active">
       <div style={{ padding: "64px 56px" }}>
         <SectionTitle title="Portfolio" bgText="Works" />
 
@@ -49,7 +48,7 @@ export function PortfolioView() {
             <li key={f.value}>
               <button
                 className={`filter-tab ${filter === f.value ? "filter-tab--active" : ""}`}
-                onClick={() => setFilter(f.value as PortfolioCategory)}
+                onClick={() => setFilter(f.value)}
               >
                 {f.label}
               </button>

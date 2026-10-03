@@ -2,12 +2,15 @@
 
 import { useRef, useState, useTransition } from "react";
 import type { SiteContentRow } from "@/lib/data/types";
-import { saveSiteContent, uploadProfilePicture, removeProfilePicture } from "./actions";
+import {
+  saveSiteContent,
+  uploadProfilePicture,
+  removeProfilePicture,
+  uploadSocialImage,
+  removeSocialImage,
+} from "./actions";
 
-const inputCls =
-  "border border-gray-300 rounded-md py-2 px-3 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500";
-const labelCls = "text-xs font-medium text-neutral-600 mb-1 block";
-const cardCls = "border border-neutral-200 rounded-lg p-5 bg-white mb-6";
+import { inputCls, labelCls, cardCls } from "@/components/admin/ui";
 
 export function SiteForm({ site }: { site: SiteContentRow }) {
   const [pending, startTransition] = useTransition();
@@ -55,6 +58,38 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
   const [skills, setSkills] = useState(site.skills);
   const [skillList, setSkillList] = useState(site.skill_list);
 
+  const [siteUrl, setSiteUrl] = useState(site.site_url ?? "");
+  const [metaDescription, setMetaDescription] = useState(site.meta_description ?? "");
+  const [metaKeywords, setMetaKeywords] = useState(site.meta_keywords ?? "");
+  const [twitterHandle, setTwitterHandle] = useState(site.twitter_handle ?? "");
+  const [ogImageUrl, setOgImageUrl] = useState(site.og_image_url);
+  const [uploadingOg, setUploadingOg] = useState(false);
+  const ogInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleOgChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingOg(true);
+    try {
+      const fd = new FormData();
+      fd.set("file", file);
+      await uploadSocialImage(fd);
+      setOgImageUrl(URL.createObjectURL(file));
+    } catch (err) {
+      alert("Upload failed: " + (err as Error).message);
+    } finally {
+      setUploadingOg(false);
+      if (ogInputRef.current) ogInputRef.current.value = "";
+    }
+  }
+
+  function removeOg() {
+    startTransition(async () => {
+      await removeSocialImage();
+      setOgImageUrl(null);
+    });
+  }
+
   function save() {
     startTransition(async () => {
       await saveSiteContent({
@@ -70,6 +105,10 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
         counters,
         skills,
         skill_list: skillList,
+        site_url: siteUrl,
+        meta_description: metaDescription,
+        meta_keywords: metaKeywords,
+        twitter_handle: twitterHandle,
       });
       setSavedAt(Date.now());
     });
@@ -108,7 +147,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
               <button
                 type="button"
                 onClick={removePhoto}
-                className="text-sm text-red-600 mt-2 block"
+                className="text-sm text-rose-600 mt-2 block"
               >
                 Remove photo
               </button>
@@ -159,6 +198,94 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
         />
       </section>
 
+      {/* ── SEO & social sharing ───────────────────────────────────── */}
+      <section className={cardCls}>
+        <h2 className="font-semibold mb-1">SEO &amp; social sharing</h2>
+        <p className="text-xs text-neutral-500 mb-4">
+          Controls what shows up in Google results and when the site is
+          shared on social media.
+        </p>
+
+        <div className="mb-4">
+          <label className={labelCls}>
+            Site URL (your live domain, no trailing slash)
+          </label>
+          <input
+            className={inputCls}
+            placeholder="https://yourdomain.com"
+            value={siteUrl}
+            onChange={(e) => setSiteUrl(e.target.value)}
+          />
+          <p className="text-xs text-neutral-400 mt-1">
+            Required for the sitemap, canonical URLs, and social preview
+            links to work correctly.
+          </p>
+        </div>
+
+        <div className="mb-4">
+          <label className={labelCls}>Meta description</label>
+          <textarea
+            className={inputCls}
+            rows={2}
+            placeholder="Shown under the title in Google search results. Falls back to your tagline if left blank."
+            value={metaDescription}
+            onChange={(e) => setMetaDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className={labelCls}>Meta keywords (optional, comma separated)</label>
+          <input
+            className={inputCls}
+            value={metaKeywords}
+            onChange={(e) => setMetaKeywords(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className={labelCls}>Twitter / X handle (optional)</label>
+          <input
+            className={inputCls}
+            placeholder="@yourhandle"
+            value={twitterHandle}
+            onChange={(e) => setTwitterHandle(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className={labelCls}>Social share image (OG image)</label>
+          {ogImageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={ogImageUrl}
+              alt=""
+              className="w-48 h-auto aspect-[1200/630] object-cover rounded-lg border mb-2"
+            />
+          ) : (
+            <p className="text-xs text-neutral-400 mb-2">
+              No image set — your profile picture will be used instead, if
+              you've uploaded one.
+            </p>
+          )}
+          <input
+            ref={ogInputRef}
+            type="file"
+            accept="image/*"
+            disabled={uploadingOg}
+            onChange={handleOgChange}
+          />
+          {uploadingOg && <span className="text-xs text-neutral-500 ml-2">Uploading…</span>}
+          {ogImageUrl && !uploadingOg && (
+            <button type="button" onClick={removeOg} className="text-sm text-rose-600 mt-2 block">
+              Remove image
+            </button>
+          )}
+          <p className="text-xs text-neutral-400 mt-1">
+            Recommended size: 1200×630px.
+          </p>
+        </div>
+      </section>
+
       {/* ── Social links ───────────────────────────────────────────── */}
       <section className={cardCls}>
         <h2 className="font-semibold mb-4">Social links</h2>
@@ -190,7 +317,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
             />
             <button
               type="button"
-              className="text-red-600 text-sm px-2"
+              className="text-rose-600 text-sm px-2"
               onClick={() => setSocial(social.filter((_, j) => j !== i))}
             >
               Remove
@@ -199,7 +326,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
         ))}
         <button
           type="button"
-          className="text-sm text-blue-600 mt-1"
+          className="text-sm text-indigo-600 mt-1"
           onClick={() => setSocial([...social, { icon: "", url: "", label: "" }])}
         >
           + Add social link
@@ -237,7 +364,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
             />
             <button
               type="button"
-              className="text-red-600 text-sm px-2"
+              className="text-rose-600 text-sm px-2"
               onClick={() => setShortInfo(shortInfo.filter((_, j) => j !== i))}
             >
               Remove
@@ -246,7 +373,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
         ))}
         <button
           type="button"
-          className="text-sm text-blue-600 mt-1"
+          className="text-sm text-indigo-600 mt-1"
           onClick={() => setShortInfo([...shortInfo, { label: "", value: "" }])}
         >
           + Add row
@@ -285,7 +412,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
             />
             <button
               type="button"
-              className="text-red-600 text-sm px-2"
+              className="text-rose-600 text-sm px-2"
               onClick={() => setCounters(counters.filter((_, j) => j !== i))}
             >
               Remove
@@ -294,7 +421,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
         ))}
         <button
           type="button"
-          className="text-sm text-blue-600 mt-1"
+          className="text-sm text-indigo-600 mt-1"
           onClick={() => setCounters([...counters, { value: 0, suffix: "+", label: "" }])}
         >
           + Add counter
@@ -327,7 +454,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
             />
             <button
               type="button"
-              className="text-red-600 text-sm px-2"
+              className="text-rose-600 text-sm px-2"
               onClick={() => setSkills(skills.filter((_, j) => j !== i))}
             >
               Remove
@@ -336,7 +463,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
         ))}
         <button
           type="button"
-          className="text-sm text-blue-600 mt-1"
+          className="text-sm text-indigo-600 mt-1"
           onClick={() => setSkills([...skills, { name: "", value: 50 }])}
         >
           + Add skill
@@ -355,7 +482,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
             />
             <button
               type="button"
-              className="text-red-600 text-sm px-2"
+              className="text-rose-600 text-sm px-2"
               onClick={() => setSkillList(skillList.filter((_, j) => j !== i))}
             >
               Remove
@@ -364,7 +491,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
         ))}
         <button
           type="button"
-          className="text-sm text-blue-600 mt-1"
+          className="text-sm text-indigo-600 mt-1"
           onClick={() => setSkillList([...skillList, ""])}
         >
           + Add tag
@@ -376,7 +503,7 @@ export function SiteForm({ site }: { site: SiteContentRow }) {
           type="button"
           disabled={pending}
           onClick={save}
-          className="bg-blue-600 text-white text-sm font-medium py-2 px-5 rounded-md hover:bg-blue-700 disabled:opacity-60"
+          className="bg-indigo-600 text-white text-sm font-medium py-2 px-5 rounded-lg hover:bg-indigo-700 disabled:opacity-60"
         >
           {pending ? "Saving…" : "Save changes"}
         </button>

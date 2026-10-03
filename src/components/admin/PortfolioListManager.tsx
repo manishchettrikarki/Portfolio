@@ -1,14 +1,12 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import type { PortfolioItemRow } from "@/lib/data/types";
+import type { PortfolioItemRow, PortfolioCategoryRow } from "@/lib/data/types";
 
 type Item = PortfolioItemRow;
 type Input = Omit<Item, "id" | "created_at">;
 
-const inputCls =
-  "border border-gray-300 rounded-md py-2 px-3 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500";
-const cardCls = "border border-neutral-200 rounded-lg p-5 bg-white mb-4";
+import { inputCls, cardCls } from "@/components/admin/ui";
 
 const emptyForm: Input = {
   title: "",
@@ -26,12 +24,14 @@ const emptyForm: Input = {
 
 export function PortfolioListManager({
   items,
+  categories,
   createAction,
   updateAction,
   deleteAction,
   uploadImageAction,
 }: {
   items: Item[];
+  categories: PortfolioCategoryRow[];
   createAction: (input: Input) => Promise<unknown>;
   updateAction: (id: string, input: Partial<Input>) => Promise<unknown>;
   deleteAction: (id: string) => Promise<unknown>;
@@ -115,11 +115,11 @@ export function PortfolioListManager({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">Portfolio</h1>
+        <h1 className="text-xl font-semibold text-neutral-900 tracking-tight">Portfolio</h1>
         {editingId === null && (
           <button
             onClick={() => startEdit()}
-            className="bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-700"
+            className="bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-indigo-700"
           >
             + Add project
           </button>
@@ -133,10 +133,25 @@ export function PortfolioListManager({
               onChange={(e) => setForm({ ...form, title: e.target.value })} />
             <input className={inputCls} placeholder="Client" value={form.client}
               onChange={(e) => setForm({ ...form, client: e.target.value })} />
-            <input className={inputCls} placeholder="Category (slug, e.g. web)" value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })} />
-            <input className={inputCls} placeholder="Category label (e.g. Web App)" value={form.category_label}
-              onChange={(e) => setForm({ ...form, category_label: e.target.value })} />
+            <select
+              className={inputCls}
+              value={form.category}
+              onChange={(e) => {
+                const cat = categories.find((c) => c.slug === e.target.value);
+                setForm({
+                  ...form,
+                  category: e.target.value,
+                  category_label: cat?.label ?? e.target.value,
+                });
+              }}
+            >
+              <option value="">Select category…</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
             <select className={inputCls} value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value as Item["type"] })}>
               <option value="image">Image</option>
@@ -161,7 +176,7 @@ export function PortfolioListManager({
             <label className="text-xs font-medium text-neutral-600 mb-1 block">Cover image</label>
             {form.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={form.image_url} alt="" className="w-40 h-24 object-cover rounded-md mb-2 border" />
+              <img src={form.image_url} alt="" className="w-40 h-24 object-cover rounded-lg mb-2 border" />
             )}
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} disabled={uploading} />
             {uploading && <span className="text-xs text-neutral-500 ml-2">Uploading…</span>}
@@ -169,10 +184,10 @@ export function PortfolioListManager({
 
           <div className="flex gap-2 mt-4">
             <button disabled={pending || uploading} onClick={save}
-              className="bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-60">
+              className="bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-indigo-700 disabled:opacity-60">
               {pending ? "Saving…" : "Save"}
             </button>
-            <button onClick={cancel} className="text-sm text-neutral-600 py-2 px-4 rounded-md hover:bg-neutral-100">
+            <button onClick={cancel} className="text-sm text-neutral-600 py-2 px-4 rounded-lg hover:bg-neutral-100">
               Cancel
             </button>
           </div>
@@ -184,14 +199,14 @@ export function PortfolioListManager({
           <div key={item.id} className={cardCls}>
             {item.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={item.image_url} alt="" className="w-full h-32 object-cover rounded-md mb-2 border" />
+              <img src={item.image_url} alt="" className="w-full h-32 object-cover rounded-lg mb-2 border" />
             )}
             <p className="font-semibold">{item.title}</p>
             <p className="text-sm text-neutral-600">{item.category_label} · {item.client}</p>
             <p className="text-sm text-neutral-500 mt-1">{item.description}</p>
             <div className="flex gap-2 mt-2">
-              <button onClick={() => startEdit(item)} className="text-sm text-blue-600">Edit</button>
-              <button onClick={() => remove(item.id)} className="text-sm text-red-600">Delete</button>
+              <button onClick={() => startEdit(item)} className="text-sm text-indigo-600">Edit</button>
+              <button onClick={() => remove(item.id)} className="text-sm text-rose-600">Delete</button>
             </div>
           </div>
         ))}

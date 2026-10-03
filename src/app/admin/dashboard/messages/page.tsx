@@ -6,7 +6,7 @@ export default async function MessagesPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Contact messages</h1>
+      <h1 className="text-xl font-semibold text-neutral-900 tracking-tight mb-4">Contact messages</h1>
       <div className="flex flex-col gap-3">
         {messages.map((m) => (
           <MessageRow key={m.id} message={m} />

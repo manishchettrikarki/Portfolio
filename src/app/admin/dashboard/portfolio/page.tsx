@@ -1,19 +1,41 @@
 import { createClient } from "@/lib/supabase/server";
 import { getPortfolioItems } from "@/lib/data/portfolio";
+import { getPortfolioCategories } from "@/lib/data/portfolioCategories";
 import { PortfolioListManager } from "@/components/admin/PortfolioListManager";
-import { create, update, remove, uploadImage } from "./actions";
+import { CategoryManager } from "@/components/admin/CategoryManager";
+import {
+  create,
+  update,
+  remove,
+  uploadImage,
+  createCategory,
+  updateCategory,
+  removeCategory,
+} from "./actions";
 
 export default async function PortfolioPage() {
   const supabase = await createClient();
-  const items = await getPortfolioItems(supabase);
+  const [items, categories] = await Promise.all([
+    getPortfolioItems(supabase),
+    getPortfolioCategories(supabase),
+  ]);
 
   return (
-    <PortfolioListManager
-      items={items}
-      createAction={create}
-      updateAction={update}
-      deleteAction={remove}
-      uploadImageAction={uploadImage}
-    />
+    <div>
+      <CategoryManager
+        categories={categories}
+        createAction={createCategory}
+        updateAction={updateCategory}
+        deleteAction={removeCategory}
+      />
+      <PortfolioListManager
+        items={items}
+        categories={categories}
+        createAction={create}
+        updateAction={update}
+        deleteAction={remove}
+        uploadImageAction={uploadImage}
+      />
+    </div>
   );
 }
