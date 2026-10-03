@@ -31,7 +31,7 @@ export function DeleteBlogButton({ id }: { id: string }) {
   return (
     <button
       disabled={pending}
-      className="text-sm text-red-600 disabled:opacity-50"
+      className="text-sm text-rose-600 disabled:opacity-50"
       onClick={() => {
         if (!confirm("Delete this blog post?")) return;
         startTransition(async () => {

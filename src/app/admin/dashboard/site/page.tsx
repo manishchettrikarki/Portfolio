@@ -8,7 +8,7 @@ export default async function SitePage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-1">Site & About</h1>
+      <h1 className="text-xl font-semibold text-neutral-900 tracking-tight mb-1">Site & About</h1>
       <p className="text-sm text-neutral-500 mb-6">
         Controls the hero, header, footer, about bio, short info, counters
         and skills shown across the site.

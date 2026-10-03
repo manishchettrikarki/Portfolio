@@ -5,6 +5,8 @@ import {
   updateSiteContent,
   uploadProfileImage,
   deleteProfileImage,
+  uploadOgImage,
+  deleteOgImage,
   type SiteContentUpdate,
 } from "@/lib/data/site";
 
@@ -24,6 +26,20 @@ export async function uploadProfilePicture(formData: FormData) {
 
 export async function removeProfilePicture() {
   await deleteProfileImage();
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/dashboard/site");
+}
+
+export async function uploadSocialImage(formData: FormData) {
+  const file = formData.get("file") as File | null;
+  if (!file || file.size === 0) throw new Error("No file provided");
+  await uploadOgImage(file);
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/dashboard/site");
+}
+
+export async function removeSocialImage() {
+  await deleteOgImage();
   revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard/site");
 }

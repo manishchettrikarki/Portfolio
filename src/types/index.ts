@@ -82,6 +82,7 @@ export interface BlogsItem {
   tags: string[];
   quote?: string;
   coverImageUrl?: string | null;
+  videoUrl?: string | null;
 }
 
 // ─── Contact ──────────────────────────────────────────────────────────────────

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSectionContext } from "@/components/reusable/sectionContext";
 import { SectionTitle } from "@/components/reusable/sectionTitle";
 import { SocialIcon } from "@/components/reusable/icons";
 import { usePortfolioContent } from "@/utils/usePortfolioContent";
@@ -16,7 +15,6 @@ const INIT_FORM: ContactFormData = {
 const INIT_STATUS: FormStatus = { type: "idle", message: "" };
 
 export function ContactView() {
-  const { active } = useSectionContext();
   const { siteConfig } = usePortfolioContent();
   const [form, setForm] = useState<ContactFormData>(INIT_FORM);
   const [status, setStatus] = useState<FormStatus>(INIT_STATUS);
@@ -62,7 +60,7 @@ export function ContactView() {
   };
 
   return (
-    <section className={`view ${active === "contact" ? "view--active" : ""}`}>
+    <section className="view view--active">
       <div style={{ padding: "64px 56px", maxWidth: 900 }}>
         <SectionTitle title="Contact" bgText="Contact" />
 

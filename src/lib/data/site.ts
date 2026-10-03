@@ -19,7 +19,12 @@ export async function getSiteContent(
 export type SiteContentUpdate = Partial<
   Omit<
     SiteContentRow,
-    "id" | "updated_at" | "cv_url" | "cv_filename" | "profile_image_url"
+    | "id"
+    | "updated_at"
+    | "cv_url"
+    | "cv_filename"
+    | "profile_image_url"
+    | "og_image_url"
   >
 >;
 
@@ -106,6 +111,45 @@ export async function deleteProfileImage() {
   const { data, error } = await supabase
     .from("site_content")
     .update({ profile_image_url: null })
+    .eq("id", 1)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as SiteContentRow;
+}
+
+// ─── Social share (OG) image ───────────────────────────────────────────────
+export async function uploadOgImage(file: File) {
+  const { supabase } = await requireAdmin();
+
+  const path = `og-${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+  const { error: uploadError } = await supabase.storage
+    .from("portfolio-media")
+    .upload(path, file, { upsert: false, contentType: file.type });
+
+  if (uploadError) throw uploadError;
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("portfolio-media").getPublicUrl(path);
+
+  const { data, error } = await supabase
+    .from("site_content")
+    .update({ og_image_url: publicUrl })
+    .eq("id", 1)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as SiteContentRow;
+}
+
+export async function deleteOgImage() {
+  const { supabase } = await requireAdmin();
+  const { data, error } = await supabase
+    .from("site_content")
+    .update({ og_image_url: null })
     .eq("id", 1)
     .select()
     .single();

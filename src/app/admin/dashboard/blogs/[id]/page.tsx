@@ -1,6 +1,6 @@
 import { getBlogById } from "@/lib/data/blogs";
 import { BlogForm } from "../BlogForm";
-import { update, uploadCoverImage } from "../actions";
+import { update, uploadCoverImage, uploadVideo } from "../actions";
 
 export default async function EditBlogPage({
   params,
@@ -13,11 +13,12 @@ export default async function EditBlogPage({
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Edit blog post</h1>
+      <h1 className="text-xl font-semibold text-neutral-900 tracking-tight mb-4">Edit blog post</h1>
       <BlogForm
         initial={blog}
         onSubmit={boundUpdate}
         uploadCoverImageAction={uploadCoverImage}
+        uploadVideoAction={uploadVideo}
       />
     </div>
   );
