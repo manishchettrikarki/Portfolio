@@ -7,6 +7,7 @@ import {
   updateBlog,
   deleteBlog,
   uploadBlogCoverImage,
+  uploadBlogVideo,
   slugify,
   type BlogInput,
 } from "@/lib/data/blogs";
@@ -36,4 +37,13 @@ export async function uploadCoverImage(formData: FormData) {
   const file = formData.get("file") as File | null;
   if (!file || file.size === 0) throw new Error("No file provided");
   return uploadBlogCoverImage(file);
+}
+
+export async function uploadVideo(formData: FormData) {
+  const file = formData.get("file") as File | null;
+  if (!file || file.size === 0) throw new Error("No file provided");
+  if (!file.type.startsWith("video/")) {
+    throw new Error("Please upload a video file.");
+  }
+  return uploadBlogVideo(file);
 }

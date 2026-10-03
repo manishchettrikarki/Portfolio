@@ -19,6 +19,7 @@ import {
   education as DEFAULT_EDUCATION,
   testimonials as DEFAULT_TESTIMONIALS,
   portfolioItems as DEFAULT_PORTFOLIO_ITEMS,
+  portfolioFilters as DEFAULT_PORTFOLIO_FILTERS,
   blogsItem as DEFAULT_BLOGS_ITEMS,
 } from "@/utils/constants";
 import type {
@@ -28,6 +29,7 @@ import type {
   ResumeItem,
   Testimonial,
   PortfolioItem,
+  PortfolioFilter,
   BlogsItem,
   SocialLink,
 } from "@/types";
@@ -56,6 +58,7 @@ interface PortfolioContentValue {
   education: ResumeItem[];
   testimonials: Testimonial[];
   portfolioItems: PortfolioItem[];
+  portfolioFilters: PortfolioFilter[];
   blogsItems: BlogsItem[];
 }
 
@@ -71,6 +74,7 @@ const defaultValue: PortfolioContentValue = {
   education: DEFAULT_EDUCATION,
   testimonials: DEFAULT_TESTIMONIALS,
   portfolioItems: DEFAULT_PORTFOLIO_ITEMS,
+  portfolioFilters: DEFAULT_PORTFOLIO_FILTERS,
   blogsItems: DEFAULT_BLOGS_ITEMS,
 };
 
@@ -89,8 +93,15 @@ export function PortfolioContentProvider({
     const supabase = createClient();
 
     async function load() {
-      const [site, experience, education, testimonials, portfolio, blogs] =
-        await Promise.all([
+      const [
+        site,
+        experience,
+        education,
+        testimonials,
+        portfolio,
+        portfolioCategories,
+        blogs,
+      ] = await Promise.all([
           supabase.from("site_content").select("*").eq("id", 1).single(),
           supabase
             .from("experience")
@@ -109,6 +120,10 @@ export function PortfolioContentProvider({
             .select("*")
             .order("sort_order", { ascending: true }),
           supabase
+            .from("portfolio_categories")
+            .select("*")
+            .order("sort_order", { ascending: true }),
+          supabase
             .from("blogs")
             .select("*")
             .eq("published", true)
@@ -123,6 +138,7 @@ export function PortfolioContentProvider({
         education.error ||
         testimonials.error ||
         portfolio.error ||
+        portfolioCategories.error ||
         blogs.error
       ) {
         // Keep static fallback content if Supabase isn't reachable/configured.
@@ -133,6 +149,7 @@ export function PortfolioContentProvider({
             education.error ||
             testimonials.error ||
             portfolio.error ||
+            portfolioCategories.error ||
             blogs.error,
         );
         setValue((v) => ({ ...v, loading: false }));
@@ -190,6 +207,13 @@ export function PortfolioContentProvider({
           description: p.description,
           technologies: p.technologies ?? [],
         })),
+        portfolioFilters: [
+          { label: "All", value: "all" },
+          ...(portfolioCategories.data ?? []).map((c) => ({
+            label: c.label,
+            value: c.slug,
+          })),
+        ],
         blogsItems: (blogs.data ?? []).map((b) => ({
           id: b.id,
           title: b.title,
@@ -203,6 +227,7 @@ export function PortfolioContentProvider({
           tags: b.tags ?? [],
           quote: b.quote ?? undefined,
           coverImageUrl: b.cover_image_url,
+          videoUrl: b.video_url,
         })),
       });
     }

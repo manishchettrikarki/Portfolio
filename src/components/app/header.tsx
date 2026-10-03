@@ -1,24 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { useSectionContext } from "@/components/reusable/sectionContext";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useDarkMode } from "@/components/reusable/useDarkMode";
 import { SocialIcon, SunIcon, MoonIcon } from "@/components/reusable/icons";
 import { navLinks } from "@/utils/constants";
 import type { SectionId } from "@/types";
 import { usePortfolioContent } from "@/utils/usePortfolioContent";
 
+function sectionHref(section: SectionId) {
+  return section === "home" ? "/" : `/${section}`;
+}
+
 // ─── Desktop Sidebar ──────────────────────────────────────────────────────────
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { active, setActive } = useSectionContext();
+  const pathname = usePathname();
+  const router = useRouter();
   const { isDark, toggle } = useDarkMode();
   const { siteConfig } = usePortfolioContent();
 
-  const navigate = (section: SectionId) => {
-    setActive(section);
-    setMobileOpen(false);
-  };
+  const isActive = (section: SectionId) => pathname === sectionHref(section);
 
   return (
     <>
@@ -27,7 +30,7 @@ export function Header() {
         {/* Logo */}
         <div style={{ marginBottom: 40, textAlign: "center" }}>
           <button
-            onClick={() => navigate("home")}
+            onClick={() => router.push("/")}
             style={{
               fontFamily: "'Montserrat', sans-serif",
               fontWeight: 800,
@@ -67,12 +70,12 @@ export function Header() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {navLinks.map((link) => (
               <li key={link.section}>
-                <button
-                  onClick={() => navigate(link.section)}
-                  className={`nav-link ${active === link.section ? "nav-link--active" : ""}`}
+                <Link
+                  href={sectionHref(link.section)}
+                  className={`nav-link ${isActive(link.section) ? "nav-link--active" : ""}`}
                 >
                   {link.label}
-                </button>
+                </Link>
               </li>
             ))}
           </ul>
@@ -148,7 +151,7 @@ export function Header() {
       {/* ── Mobile Topbar ── */}
       <header className="header">
         <button
-          onClick={() => navigate("home")}
+          onClick={() => router.push("/")}
           style={{
             fontFamily: "'Montserrat', sans-serif",
             fontWeight: 800,
@@ -242,13 +245,14 @@ export function Header() {
           >
             {navLinks.map((link) => (
               <li key={link.section}>
-                <button
-                  onClick={() => navigate(link.section)}
-                  className={`nav-link ${active === link.section ? "nav-link--active" : ""}`}
-                  style={{ padding: "4px 0" }}
+                <Link
+                  href={sectionHref(link.section)}
+                  onClick={() => setMobileOpen(false)}
+                  className={`nav-link ${isActive(link.section) ? "nav-link--active" : ""}`}
+                  style={{ padding: "4px 0", display: "inline-block" }}
                 >
                   {link.label}
-                </button>
+                </Link>
               </li>
             ))}
           </ul>
