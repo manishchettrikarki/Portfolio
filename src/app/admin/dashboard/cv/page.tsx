@@ -8,7 +8,7 @@ export default async function CvPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-1">CV / Resume</h1>
+      <h1 className="text-xl font-semibold text-neutral-900 tracking-tight mb-1">CV / Resume</h1>
       <p className="text-sm text-neutral-500 mb-6">
         Upload a PDF. It becomes downloadable from the About section of the
         site immediately.

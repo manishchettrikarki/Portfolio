@@ -3,7 +3,7 @@
 import { useRef, useTransition } from "react";
 import { upload, remove } from "./actions";
 
-const cardCls = "border border-neutral-200 rounded-lg p-5 bg-white";
+import { cardCls } from "@/components/admin/ui";
 
 export function CvUploader({
   cvUrl,
@@ -41,7 +41,7 @@ export function CvUploader({
               href={cvUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-sm text-blue-600"
+              className="text-sm text-indigo-600"
             >
               View / download current CV ↗
             </a>
@@ -49,7 +49,7 @@ export function CvUploader({
           <button
             disabled={pending}
             onClick={() => startTransition(() => remove())}
-            className="text-sm text-red-600 disabled:opacity-50"
+            className="text-sm text-rose-600 disabled:opacity-50"
           >
             Remove
           </button>

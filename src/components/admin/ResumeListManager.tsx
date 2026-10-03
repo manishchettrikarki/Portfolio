@@ -6,9 +6,7 @@ import type { ExperienceRow } from "@/lib/data/types";
 type Item = ExperienceRow; // education rows share the same shape
 type Input = Omit<Item, "id" | "created_at">;
 
-const inputCls =
-  "border border-gray-300 rounded-md py-2 px-3 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500";
-const cardCls = "border border-neutral-200 rounded-lg p-5 bg-white mb-4";
+import { inputCls, cardCls } from "@/components/admin/ui";
 
 const emptyForm: Input = { period: "", title: "", subtitle: "", description: "", sort_order: 0 };
 
@@ -71,11 +69,11 @@ export function ResumeListManager({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">{entityLabel}</h1>
+        <h1 className="text-xl font-semibold text-neutral-900 tracking-tight">{entityLabel}</h1>
         {editingId === null && (
           <button
             onClick={() => startEdit()}
-            className="bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-700"
+            className="bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-indigo-700"
           >
             + Add entry
           </button>
@@ -122,13 +120,13 @@ export function ResumeListManager({
             <button
               disabled={pending}
               onClick={save}
-              className="bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-60"
+              className="bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-indigo-700 disabled:opacity-60"
             >
               {pending ? "Saving…" : "Save"}
             </button>
             <button
               onClick={cancel}
-              className="text-sm text-neutral-600 py-2 px-4 rounded-md hover:bg-neutral-100"
+              className="text-sm text-neutral-600 py-2 px-4 rounded-lg hover:bg-neutral-100"
             >
               Cancel
             </button>
@@ -146,10 +144,10 @@ export function ResumeListManager({
               <p className="text-sm text-neutral-500 mt-1">{item.description}</p>
             </div>
             <div className="flex gap-2 shrink-0">
-              <button onClick={() => startEdit(item)} className="text-sm text-blue-600">
+              <button onClick={() => startEdit(item)} className="text-sm text-indigo-600">
                 Edit
               </button>
-              <button onClick={() => remove(item.id)} className="text-sm text-red-600">
+              <button onClick={() => remove(item.id)} className="text-sm text-rose-600">
                 Delete
               </button>
             </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSectionContext } from "@/components/reusable/sectionContext";
 import { SectionTitle } from "@/components/reusable/sectionTitle";
 import { DownloadIcon } from "@/components/reusable/icons";
 import { animateCounter } from "@/utils";
@@ -9,8 +8,7 @@ import { usePortfolioContent } from "@/utils/usePortfolioContent";
 import type { ResumeItem } from "@/types"
 
 export function AboutView() {
-  const { active } = useSectionContext();
-  const isActive = active === "about";
+  const isActive = true; // this view is now its own route, always visible once mounted
   const {
     aboutBio,
     shortInfo,
@@ -24,7 +22,7 @@ export function AboutView() {
   } = usePortfolioContent();
 
   return (
-    <section className={`view ${isActive ? "view--active" : ""}`}>
+    <section className="view view--active">
       <div style={{ padding: "64px 56px", maxWidth: 900 }}>
         <SectionTitle title="About Me" bgText="About" />
 

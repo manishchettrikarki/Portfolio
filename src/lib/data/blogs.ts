@@ -17,6 +17,21 @@ export async function getPublishedBlogs(
   return data as BlogRow[];
 }
 
+/** Public: a single published post by slug (for the blog post page). */
+export async function getPublishedBlogBySlug(
+  supabase: SupabaseClient,
+  slug: string,
+): Promise<BlogRow | null> {
+  const { data, error } = await supabase
+    .from("blogs")
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+  if (error) throw error;
+  return data as BlogRow | null;
+}
+
 /** Admin: all posts, published or draft. */
 export async function getAllBlogs(): Promise<BlogRow[]> {
   const { supabase } = await requireAdmin();
@@ -73,6 +88,20 @@ export async function deleteBlog(id: string) {
 export async function uploadBlogCoverImage(file: File) {
   const { supabase } = await requireAdmin();
   const path = `blog-${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+  const { error } = await supabase.storage
+    .from("portfolio-media")
+    .upload(path, file, { upsert: false, contentType: file.type });
+  if (error) throw error;
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("portfolio-media").getPublicUrl(path);
+  return publicUrl;
+}
+
+export async function uploadBlogVideo(file: File) {
+  const { supabase } = await requireAdmin();
+  const path = `blog-video-${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
   const { error } = await supabase.storage
     .from("portfolio-media")
     .upload(path, file, { upsert: false, contentType: file.type });

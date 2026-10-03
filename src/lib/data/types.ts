@@ -17,6 +17,11 @@ export interface SiteContentRow {
   cv_url: string | null;
   cv_filename: string | null;
   profile_image_url: string | null;
+  site_url: string | null;
+  meta_description: string | null;
+  meta_keywords: string | null;
+  og_image_url: string | null;
+  twitter_handle: string | null;
   updated_at: string;
 }
 
@@ -37,6 +42,14 @@ export interface TestimonialRow {
   name: string;
   role: string;
   text: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface PortfolioCategoryRow {
+  id: string;
+  slug: string;
+  label: string;
   sort_order: number;
   created_at: string;
 }
@@ -70,6 +83,7 @@ export interface BlogRow {
   quote: string | null;
   tags: string[];
   cover_image_url: string | null;
+  video_url: string | null;
   published: boolean;
   created_at: string;
   updated_at: string;
